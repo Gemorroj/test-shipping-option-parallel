@@ -1,17 +1,23 @@
 <?php
+declare(strict_types=1);
 
 namespace App;
 
-class Runner
+readonly class Runner
 {
-    private int $delay;
-    public function __construct(int $delay = 1)
+    public function __construct(private Repository $repository = new Repository(), private int $delay = 1)
     {
-        $this->delay = $delay;
     }
 
-    public function make(ShippingOption $shippingOption): ResultShippingOption {
+    public function make(ShippingOption $shippingOption): ResultShippingOption
+    {
         \sleep($this->delay);
+        $this->repository->set('shippingOption'.$shippingOption->getId(), 'success');
         return new ResultShippingOption($shippingOption);
+    }
+
+    public function getRepository(): Repository
+    {
+        return $this->repository;
     }
 }

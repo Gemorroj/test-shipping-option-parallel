@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
-use Amp\Loop;
+use Amp\Future;
 use Amp\Parallel\Worker;
-use Amp\Promise;
+use function Amp\async;
 
 $shippingOptions = [
     new \App\ShippingOption(100),
@@ -15,13 +16,17 @@ $shippingOptions = [
 
 $start = \microtime(true);
 $runner = new \App\Runner();
-$promises = [];
+$executions = [];
 foreach ($shippingOptions as $shippingOption) {
-    $promises[$shippingOption->getId()] = Worker\enqueueCallable([$runner, 'make'], $shippingOption);
+    $executions[$shippingOption->getId()] = Worker\submit(new \App\RunnerTask($runner, $shippingOption));
 }
 
-$responses = Promise\wait(Promise\all($promises));
+$responses = Future\await(array_map(
+    static fn (Worker\Execution $e) => $e->getFuture(),
+    $executions,
+));
+
 echo \round(\microtime(true) - $start, 2) . "\n";
 
-print_r(\get_class(Loop::get()));
-//print_r($responses);
+\print_r($responses);
+\print_r($runner->getRepository()); // problem - is empty

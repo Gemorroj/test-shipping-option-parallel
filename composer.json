@@ -4,8 +4,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.4",
-        "amphp/parallel": "^1.4"
+        "php": ">=8.2",
+        "amphp/parallel": "^2.2"
     },
     "autoload": {
         "psr-4": {
