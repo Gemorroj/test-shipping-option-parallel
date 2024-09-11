@@ -4,6 +4,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Amp\Future;
 use Amp\Parallel\Worker;
+use App\Repository;
 use function Amp\async;
 
 $shippingOptions = [
@@ -15,7 +16,8 @@ $shippingOptions = [
 ];
 
 $start = \microtime(true);
-$runner = new \App\Runner();
+$repository = new Repository(['a' => 'b']);
+$runner = new \App\Runner($repository);
 $executions = [];
 foreach ($shippingOptions as $shippingOption) {
     $executions[$shippingOption->getId()] = Worker\submit(new \App\RunnerTask($runner, $shippingOption));

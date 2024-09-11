@@ -5,7 +5,7 @@ namespace App;
 
 readonly class Runner
 {
-    public function __construct(private Repository $repository = new Repository(), private int $delay = 1)
+    public function __construct(private Repository $repository, private int $delay = 1)
     {
     }
 
